@@ -9,7 +9,6 @@ RealMe solves the problem of unreliable connectivity in mobile messaging. Unlike
 The scope of this project includes:
 -   **Authentication**: Secure Google Sign-In.
 -   **Real-time Communication**: Instant messaging sync via Firestore.
--   **Media**: Voice recording and playback with optimized storage.
 -   **Presence**: Real-time "Online" and "Last Seen" indicators.
 -   **Resilience**: Offline queuing and background synchronization.
 
@@ -17,7 +16,6 @@ The scope of this project includes:
 
 -   **Authentication**: Google Sign-In with strict session management and secure credential handling.
 -   **Chat**: Real-time text messaging with 1-on-1 support.
--   **Voice Notes**: Native audio recording (AAC/m4a) and streaming playback.
 -   **Presence System**: Automatic status updates based on app lifecycle (foreground/background).
 -   **Offline-First**: Messages are queued locally via Hive if the network is unavailable and synced when connectivity returns.
 -   **Push Notifications**: Firebase Cloud Messaging (FCM) integration for background alerts.
@@ -28,9 +26,8 @@ The scope of this project includes:
 
 -   **Framework**: Flutter (Dart)
 -   **State Management**: `flutter_riverpod` (v2.5+) for dependency injection and reactive state.
--   **Backend**: Firebase (Auth, Firestore, Storage, Messaging).
+-   **Backend**: Firebase (Auth, Firestore, Messaging).
 -   **Local Storage**: `hive` (NoSQL database) for persistent offline message queues.
--   **Audio**: `record` (recording) and `audioplayers` (playback).
 -   **Utils**: `permission_handler` (OS permissions), `connectivity_plus` (network status).
 
 ## 4. Architecture Walkthrough
@@ -62,7 +59,7 @@ RealMe follows a **Clean Architecture** approach with strict separation of conce
 
 -   **Dependency Injection**:
     -   Managed via `lib/core/providers.dart`.
-    -   Services like `VoiceRecorderService` use `Provider.autoDispose` to ensure native resources (microphones/audio sessions) are released immediately when not in use.
+    -   Ensures high-speed access to repositories and services.
 
 ## 5. Data Flow Walkthrough
 
@@ -136,7 +133,6 @@ We avoid `try-catch` blocks in the UI. Instead, we use a functional error handli
 ## 10. Performance Considerations
 
 -   **List Rendering**: `ChatScreen` uses `ListView.builder` with `reverse: true`. This ensures `O(1)` access to the newest messages at the bottom and efficient rendering of large histories.
--   **Disposable Providers**: Heavy resources (Microphone, AudioPlayer) are managed by `autoDispose` providers to prevent memory leaks.
 -   **Stream Subscriptions**: Firestore streams are managed by Riverpod (`ref.watch`), which automatically cancels subscriptions when the UI is disposed.
 
 ## 11. Trade-offs & Limitations
@@ -206,9 +202,10 @@ See [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) for complete commercial l
 ### 📱 Current UI State
 - **Home Screen**: Shows demo users (User A, User B, Test User) for testing
   - *Note*: Real user list would require `ChatRepository.getChats()` method (not implemented to preserve architecture)
-- **Chat Screen**: Fully functional with text and voice messages
+- **Chat Screen**: Fully functional high-speed text messaging
 - **Auth Flow**: Complete Google Sign-In integration
 - **Empty/Error States**: User-friendly messages with retry functionality
+- **Spark Plan Compliant**: No billing or credit card required for storage or database.
 
 ### 🎯 What This App Demonstrates
 - ✅ Production-grade architecture and patterns

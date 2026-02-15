@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/message_entity.dart';
 import 'package:intl/intl.dart';
-import '../../../../core/providers.dart';
 
 class MessageBubble extends ConsumerWidget {
   final MessageEntity message;
@@ -37,16 +36,15 @@ class MessageBubble extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (message.type == MessageType.audio)
-              _buildAudioPlayer(context, ref)
-            else
-              Text(
-                message.content,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: isMe ? AppColors.background : AppColors.textPrimary,
-                      fontSize: 16,
-                    ),
-              ),
+            Text(
+              message.content,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: isMe
+                        ? AppColors.background.withAlpha(178)
+                        : AppColors.textFaint,
+                    fontSize: 10,
+                  ),
+            ),
             const SizedBox(height: 4),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -55,7 +53,7 @@ class MessageBubble extends ConsumerWidget {
                   DateFormat('HH:mm').format(message.timestamp),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: isMe
-                            ? AppColors.background.withOpacity(0.7)
+                            ? AppColors.background.withAlpha(178)
                             : AppColors.textFaint,
                         fontSize: 10,
                       ),
@@ -65,7 +63,7 @@ class MessageBubble extends ConsumerWidget {
                   Icon(
                     _getStatusIcon(message.status),
                     size: 12,
-                    color: AppColors.background.withOpacity(0.7),
+                    color: AppColors.background.withAlpha(178),
                   ),
                 ],
               ],
@@ -73,37 +71,6 @@ class MessageBubble extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildAudioPlayer(BuildContext context, WidgetRef ref) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(
-            Icons.play_arrow_rounded,
-            color: isMe ? AppColors.background : AppColors.textPrimary,
-            size: 32,
-          ),
-          onPressed: () async {
-            final result = await ref.read(voicePlayerServiceProvider).play(message.content);
-            result.fold(
-              (_) {}, // Success
-              (error) => ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Playback failed: ${error.message}')),
-              ),
-            );
-          },
-        ),
-        Text(
-          'Voice Note',
-          style: TextStyle(
-            color: isMe ? AppColors.background : AppColors.textPrimary,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-      ],
     );
   }
 

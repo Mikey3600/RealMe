@@ -4,11 +4,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/presence/presence_service.dart';
-import '../features/voice/voice_player_service.dart';
-import '../features/voice/voice_recorder_service.dart';
 import '../services/hive_service.dart';
 import '../features/chat/domain/chat_repository.dart';
 import '../features/chat/data/firebase_chat_repository.dart';
+import '../features/auth/presentation/auth_controller.dart';
 
 // --- Firebase Instances ---
 
@@ -46,40 +45,16 @@ final presenceServiceProvider = Provider<PresenceService>((ref) {
   return service;
 });
 
-final voiceRecorderServiceProvider = Provider.autoDispose<VoiceRecorderService>((ref) {
-  final storage = ref.watch(firebaseStorageProvider);
-  
-  final service = VoiceRecorderService(storage: storage);
-  
-  // Lifecycle: Release mic resources immediately when no longer needed
-  ref.onDispose(() {
-    service.dispose();
-  });
-  
-  return service;
-});
-
-final voicePlayerServiceProvider = Provider.autoDispose<VoicePlayerService>((ref) {
-  final service = VoicePlayerService();
-  
-  // Lifecycle: Release audio player resources
-  ref.onDispose(() {
-    service.dispose();
-  });
-  
-  return service;
-});
-
 // --- Repository Providers ---
 
 final chatRepositoryProvider = Provider<ChatRepository>((ref) {
   final firestore = ref.watch(firebaseFirestoreProvider);
-  final auth = ref.watch(firebaseAuthProvider);
+  final authUser = ref.watch(authUserProvider).value;
   final hive = ref.watch(hiveServiceProvider);
   
   return FirebaseChatRepository(
     firestore: firestore,
-    currentUserId: auth.currentUser?.uid ?? '',
+    currentUserId: authUser?.id ?? '',
     hiveService: hive,
   );
 });
