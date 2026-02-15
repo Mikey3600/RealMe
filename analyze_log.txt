@@ -1,0 +1,25 @@
+﻿Analyzing RealMe...                                             
+
+warning - The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored - test\features\chat\data\chat_repository_test.mocks.dart:430:12 - duplicate_ignore
+warning - The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored - test\features\chat\data\chat_repository_test.mocks.dart:842:12 - duplicate_ignore
+
+flutter : 2 issues 
+found. (ran in 2.4s)
+At line:1 char:1
++ flutter analyze 
+2>&1 | Out-File 
+-FilePath C:\Users\KI
+IT\OneDrive\Desk ...
++ 
+~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (2 issue   
+ s found. (ran in    
+ 2.4s):String) [    
+], RemoteExcepti    
+on
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
