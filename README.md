@@ -161,7 +161,7 @@ We avoid `try-catch` blocks in the UI. Instead, we use a functional error handli
 2.  **Setup**:
     ```bash
     # Clone the repository
-    git clone https://github.com/your-username/real-me.git
+    git clone  https://github.com/Mikey3600/RealMe.git
     cd real-me
 
     # Install dependencies
