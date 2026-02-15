@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'features/splash/presentation/splash_screen.dart';
-import 'features/auth/presentation/login_screen.dart';
 import 'firebase_options.dart';
 import 'services/notification_service.dart';
 import 'core/theme/app_theme.dart';
@@ -36,6 +35,7 @@ class RealMeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'RealMe',
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       home: const SplashScreen(),
     );

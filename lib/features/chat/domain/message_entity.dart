@@ -1,5 +1,6 @@
 /// Status of a message in the delivery pipeline.
 enum MessageStatus {
+  pending,
   sent,
   delivered,
   read,
