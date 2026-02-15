@@ -1,0 +1,44 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'features/auth/presentation/login_screen.dart';
+import 'firebase_options.dart';
+import 'services/notification_service.dart';
+import 'services/hive_service.dart';
+
+// Top-level defined in notification_service.dart, but we need to register it here.
+// Actually, it's safer to register it inside the service init or main if we import the service.
+// The service file already has the @pragma entry point.
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final notificationService = NotificationService();
+  await notificationService.init();
+  await notificationService.setupInteractedMessage();
+
+  final hiveService = HiveService();
+  await hiveService.init();
+
+  runApp(const ProviderScope(child: RealMeApp()));
+}
+
+class RealMeApp extends StatelessWidget {
+  const RealMeApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'RealMe',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const LoginScreen(), // Starting point for now
+    );
+  }
+}

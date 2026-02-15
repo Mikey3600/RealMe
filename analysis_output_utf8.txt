@@ -1,0 +1,16 @@
+﻿Analyzing RealMe...                                             
+
+warning - Unused import: '../../../core/errors/app_error.dart' - lib\features\auth\presentation\auth_controller.dart:4:8 - unused_import
+warning - Unused import: '../../auth/presentation/auth_controller.dart' - lib\features\chat\presentation\chat_screen.dart:4:8 - unused_import
+  error - Target of URI doesn't exist: 'firebase_options.dart' - lib\main.dart:6:8 - uri_does_not_exist
+  error - Undefined name 'DefaultFirebaseOptions' - lib\main.dart:16:14 - undefined_identifier
+  error - Target of URI doesn't exist: '../firebase_options.dart' - lib\services\firebase_service.dart:6:8 - uri_does_not_exist
+  error - Undefined name 'DefaultFirebaseOptions' - lib\services\firebase_service.dart:19:16 - undefined_identifier
+  error - Target of URI doesn't exist: '../firebase_options.dart' - lib\services\notification_service.dart:5:8 - uri_does_not_exist
+  error - Undefined name 'DefaultFirebaseOptions' - lib\services\notification_service.dart:13:41 - undefined_identifier
+warning - The value of the local variable 'tMessage' isn't used - test\features\chat\data\chat_repository_test.dart:44:11 - unused_local_variable
+  error - A value of type 'Null' can't be assigned to a parameter of type 'DateTime' in a const constructor - test\features\chat\data\chat_repository_test.dart:49:7 - const_constructor_param_type_mismatch
+  error - The argument type 'Null' can't be assigned to the parameter type 'DateTime'.  - test\features\chat\data\chat_repository_test.dart:53:11 - argument_type_not_assignable
+warning - The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored - test\features\chat\data\chat_repository_test.mocks.dart:430:12 - duplicate_ignore
+warning - The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored - test\features\chat\data\chat_repository_test.mocks.dart:842:12 - duplicate_ignore
+
