@@ -7,6 +7,8 @@ import '../features/presence/presence_service.dart';
 import '../features/voice/voice_player_service.dart';
 import '../features/voice/voice_recorder_service.dart';
 import '../services/hive_service.dart';
+import '../features/chat/domain/chat_repository.dart';
+import '../features/chat/data/firebase_chat_repository.dart';
 
 // --- Firebase Instances ---
 
@@ -66,4 +68,18 @@ final voicePlayerServiceProvider = Provider.autoDispose<VoicePlayerService>((ref
   });
   
   return service;
+});
+
+// --- Repository Providers ---
+
+final chatRepositoryProvider = Provider<ChatRepository>((ref) {
+  final firestore = ref.watch(firebaseFirestoreProvider);
+  final auth = ref.watch(firebaseAuthProvider);
+  final hive = ref.watch(hiveServiceProvider);
+  
+  return FirebaseChatRepository(
+    firestore: firestore,
+    currentUserId: auth.currentUser?.uid ?? '',
+    hiveService: hive,
+  );
 });

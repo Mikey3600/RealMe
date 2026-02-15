@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../core/providers.dart';
+import '../../../core/theme/app_colors.dart';
 import '../domain/message_entity.dart';
+import 'widgets/chat_input.dart';
+import 'widgets/message_bubble.dart';
+import '../../../core/widgets/empty_state.dart';
 
-// Placeholder provider for messages - to be implemented properly in a real ChatController
+// Stream provider for messages
 final chatMessagesProvider = StreamProvider.family<List<MessageEntity>, String>((ref, otherUserId) {
-  return const Stream.empty();
+  final repository = ref.watch(chatRepositoryProvider);
+  return repository.getMessages(otherUserId);
 });
 
 class ChatScreen extends ConsumerWidget {
@@ -18,45 +23,85 @@ class ChatScreen extends ConsumerWidget {
     final messagesAsync = ref.watch(chatMessagesProvider(otherUserId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text(
+          'Chat with $otherUserId', 
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: AppColors.textPrimary,
+              ),
+        ),
+        backgroundColor: AppColors.surface,
+        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+      ),
       body: Column(
         children: [
           Expanded(
             child: messagesAsync.when(
-              data: (messages) => ListView.builder(
-                reverse: true, // Show newest messages at the bottom
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final msg = messages[index];
-                  return ListTile(
-                    title: Text(msg.content),
-                    subtitle: Text(msg.senderId),
+              data: (messages) {
+                if (messages.isEmpty) {
+                  return const EmptyStateWidget(
+                    icon: Icons.chat_bubble_outline_rounded,
+                    title: 'No messages yet',
+                    subtitle: 'Say hello to start the conversation!',
                   );
-                },
+                }
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: messages.length,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  itemBuilder: (context, index) {
+                    final msg = messages[index];
+                    final currentUserId = ref.read(firebaseAuthProvider).currentUser?.uid;
+                    final isMe = msg.senderId == currentUserId;
+
+                    return MessageBubble(message: msg, isMe: isMe);
+                  },
+                );
+              },
+              loading: () => const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary)),
+              error: (err, stack) => EmptyStateWidget(
+                icon: Icons.error_outline_rounded,
+                title: 'Something went wrong',
+                subtitle: err.toString(),
+                onRetry: () => ref.refresh(chatMessagesProvider(otherUserId)),
               ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('Error: $err')),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: TextField(
-                    key: Key('message_input'),
-                    decoration: InputDecoration(hintText: 'Type a message'),
-                  ),
-                ),
-                IconButton(
-                  key: const Key('send_button'),
-                  onPressed: () {
-                    // Send logic placeholder
-                  },
-                  icon: const Icon(Icons.send),
-                ),
-              ],
-            ),
+          ChatInput(
+            onSendText: (text) {
+              final currentUserId = ref.read(firebaseAuthProvider).currentUser?.uid;
+              if (currentUserId == null) return;
+
+              final newMessage = MessageEntity(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                senderId: currentUserId,
+                receiverId: otherUserId,
+                content: text,
+                timestamp: DateTime.now(),
+                status: MessageStatus.pending,
+                type: MessageType.text,
+              );
+
+              ref.read(chatRepositoryProvider).sendMessage(newMessage);
+            },
+            onSendVoice: (url) {
+              final currentUserId = ref.read(firebaseAuthProvider).currentUser?.uid;
+              if (currentUserId == null) return;
+
+              final newMessage = MessageEntity(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                senderId: currentUserId,
+                receiverId: otherUserId,
+                content: url, // Access Token/URL
+                timestamp: DateTime.now(),
+                status: MessageStatus.pending,
+                type: MessageType.audio,
+              );
+
+              ref.read(chatRepositoryProvider).sendMessage(newMessage);
+            },
           ),
         ],
       ),

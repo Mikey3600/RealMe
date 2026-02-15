@@ -2,9 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'features/splash/presentation/splash_screen.dart';
 import 'features/auth/presentation/login_screen.dart';
 import 'firebase_options.dart';
 import 'services/notification_service.dart';
+import 'core/theme/app_theme.dart';
 import 'services/hive_service.dart';
 
 // Top-level defined in notification_service.dart, but we need to register it here.
@@ -34,11 +36,8 @@ class RealMeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'RealMe',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const LoginScreen(), // Starting point for now
+      theme: AppTheme.darkTheme,
+      home: const SplashScreen(),
     );
   }
 }
