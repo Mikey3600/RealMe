@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -34,16 +35,20 @@ class VoiceRecorderService {
         return const Failure(AppError(message: 'Already recording'));
       }
 
-      // Start recording to a temporary path (handled by package)
-      await _audioRecorder.start(const RecordConfig(), path: ''); 
+      // Generate a temporary file path
+      final tempDir = Directory.systemTemp;
+      final path = '${tempDir.path}/recording_${DateTime.now().millisecondsSinceEpoch}.m4a';
+      
+      // Start recording
+      await _audioRecorder.start(const RecordConfig(), path: path); 
       
       return const Success(null);
     } catch (e, stack) {
+      debugPrint('VoiceRecorderService: startAudioCapture failed: $e');
       return Failure(AppError(
         message: 'Failed to start recording',
         stackTrace: stack,
       ));
-      // TODO: Handle audio interruptions (e.g. incoming phone call) using AudioSession.
     }
   }
 
@@ -56,6 +61,7 @@ class VoiceRecorderService {
       }
       return Success(path);
     } catch (e, stack) {
+      debugPrint('VoiceRecorderService: stopAudioCapture failed: $e');
       return Failure(AppError(
         message: 'Failed to stop recording',
         stackTrace: stack,
@@ -80,6 +86,7 @@ class VoiceRecorderService {
 
       return Success(downloadUrl);
     } catch (e, stack) {
+      debugPrint('VoiceRecorderService: uploadRecording failed: $e');
       return Failure(AppError(
         message: 'Failed to upload recording',
         stackTrace: stack,
@@ -92,9 +99,7 @@ class VoiceRecorderService {
   }
 
   Future<bool> _checkPermission() async {
-    final status = await Permission.microphone.status;
-    if (status.isGranted) return true;
-    final result = await Permission.microphone.request();
-    return result.isGranted;
+    // Use the package's native permission check
+    return await _audioRecorder.hasPermission();
   }
 }
