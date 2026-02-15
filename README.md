@@ -60,7 +60,7 @@ RealMe follows a **Clean Architecture** approach with strict separation of conce
     -   **Commands** (Writes): Methods that perform an action (e.g., `sendMessage`) return `Future<Result<void>>`. They do not return data, only success/failure status.
     -   **Queries** (Reads): Methods that return data (e.g., `getMessages`) return `Stream<List<MessageEntity>>`. They do not perform side effects.
 
--   **Depdendency Injection**:
+-   **Dependency Injection**:
     -   Managed via `lib/core/providers.dart`.
     -   Services like `VoiceRecorderService` use `Provider.autoDispose` to ensure native resources (microphones/audio sessions) are released immediately when not in use.
 
@@ -162,7 +162,7 @@ We avoid `try-catch` blocks in the UI. Instead, we use a functional error handli
     ```bash
     # Clone the repository
     git clone  https://github.com/Mikey3600/RealMe.git
-    cd real-me
+    cd RealMe
 
     # Install dependencies
     flutter pub get
